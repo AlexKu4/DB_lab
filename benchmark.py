@@ -4,7 +4,7 @@ import sqlite3
 import duckdb
 import pandas as pd
 
-count = 10
+count = 10  
 print("Choose data:\n 1 - tiny\n 2 - big")
 d = int(input())
 print("Choose library:\n 1 - psycopg\n 2 - sqlite\n 3 - duckdb\n 4 - pandas")
@@ -23,34 +23,34 @@ if n == 1:
         if k == 1:
             #query1
             start_time = time.time()
-            for i in range(10):
+            for i in range(count):
                 cursor.execute("SELECT VendorID, count(*) FROM trips GROUP BY 1;")
-            print((time.time() - start_time)/10)
+            print(f"average time of work psycopg query{k}:", (time.time() - start_time)/count)
         if k == 2:
             #query2
             start_time = time.time()
-            for i in range(10):
+            for i in range(count):
                 cursor.execute("SELECT passenger_count, avg(total_amount) FROM trips GROUP BY 1;")
-            print((time.time() - start_time)/10)
+            print(f"average time of work psycopg query{k}:", (time.time() - start_time)/count)
         if k == 3:
             #query3
             start_time = time.time()
-            for i in range(10):
-                cursor.execute("SELECT passenger_count, tpep_pickup_datetime, count(*) FROM trips GROUP BY 1, 2;")
-            print((time.time() - start_time)/10)
+            for i in range(count):
+                cursor.execute("SELECT passenger_count, extract(year from tpep_pickup_datetime), count(*) FROM trips GROUP BY 1, 2;")
+            print(f"average time of work psycopg query{k}:", (time.time() - start_time)/count)
         if k == 4:
             #query4
             start_time = time.time()
-            for i in range(10):
+            for i in range(count):
                 cursor.execute('''SELECT
                     passenger_count,
-                    tpep_pickup_datetime,
+                    extract(year from tpep_pickup_dateti),
                     round(trip_distance),
                     count(*)
                     FROM trips
                     GROUP BY 1, 2, 3
                     ORDER BY 2, 4 desc;''')
-            print((time.time() - start_time)/10)
+            print(f"average time of work psycopg query{k}:", (time.time() - start_time)/count)
     except Exception as ex_:
         print("[INFO] Delo dryan", ex_)
     finally:
@@ -161,4 +161,3 @@ if n == 4:
             final_df = grouped_df.size().reset_index(name='counts')
             final_df = final_df.sort_values(['year', 'counts'], ascending=[True, False])
     print(f"average time of work pandas query{k}:", (time.time()-start_time)/count)
-    
